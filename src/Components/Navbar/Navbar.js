@@ -7,13 +7,20 @@ import upload_icon from '../../assets/upload.png'
 import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import jack_img from '../../assets/jack.png'
+import UserMenu from './UserMenu';
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/authContext'
+import Avatar from 'react-avatar';
 const Navbar = ({ setSidebar }) => {
-const {url}=useAuth();
+const {url,currentUser}=useAuth();
     const sidebar_toggle = (e) => {
         setSidebar((prev) => prev === false ? true : false);
     }
+    const handleLogout = () => {
+        // Your logout logic here
+        console.log('User logged out');
+      };
+    
 
     return (
         <nav className='flex-div'>
@@ -31,7 +38,16 @@ const {url}=useAuth();
                 <img src={upload_icon} alt="" />
                 <img src={more_icon} alt="" />
                 <img src={notification_icon} alt="" />
-                <img src={url} alt="" className="user-icon" />
+                {/* {url?
+                <div className="App">
+                     <UserMenu url={url} onLogout={handleLogout} />
+                </div>
+                :
+                <div className="client">
+            <Avatar name={currentUser.email[0]} size={35} round="14px" /></div>
+                } */}
+                <UserMenu/>
+                {/* <img src={url} alt="" className="user-icon" /> */}
             </div>
         </nav>
     )
