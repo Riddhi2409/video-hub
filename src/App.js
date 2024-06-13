@@ -4,6 +4,7 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Video from "./Pages/Video/Video";
 import Login from "./Components/Auth/Login/Login";
+import Register from "./Components/Auth/Register/Register";
 
 const App = () => {
   const [sidebar, setSidebar] = useState(true);
@@ -12,6 +13,7 @@ const App = () => {
     <div className="w-full h-screen flex flex-col">
       <Navbar setSidebar={setSidebar} /> 
       <Routes>
+      <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Home  sidebar={sidebar} />} />
         <Route path="/video/:categoryId/:videoId" element={<Video />} />
