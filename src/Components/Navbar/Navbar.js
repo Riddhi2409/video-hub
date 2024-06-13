@@ -8,9 +8,9 @@ import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import jack_img from '../../assets/jack.png'
 import { Link } from 'react-router-dom'
-
+import { useAuth } from '../../contexts/authContext'
 const Navbar = ({ setSidebar }) => {
-
+const {url}=useAuth();
     const sidebar_toggle = (e) => {
         setSidebar((prev) => prev === false ? true : false);
     }
@@ -31,7 +31,7 @@ const Navbar = ({ setSidebar }) => {
                 <img src={upload_icon} alt="" />
                 <img src={more_icon} alt="" />
                 <img src={notification_icon} alt="" />
-                <img src={jack_img} alt="" className="user-icon" />
+                <img src={url} alt="" className="user-icon" />
             </div>
         </nav>
     )
