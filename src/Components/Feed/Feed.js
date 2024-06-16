@@ -12,6 +12,9 @@ const Feed = ({category}) => {
     const [data,setData] = useState([]);
    
     const fetchData = async ()=>{
+        if(pageToken === undefined){
+            setPageToken('');
+        }
         const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=IN&videoCategoryId=${category}&key=${API_KEY}&pageToken=${pageToken}&order=viewCount`;
         try{
             await fetch(videoList_url).then((response)=>response.json()).then((data)=>{
@@ -20,22 +23,24 @@ const Feed = ({category}) => {
                 console.log("Token",data.nextPageToken);
             setPageToken(data.nextPageToken);
             if (!data.nextPageToken) {
+                setPageToken('');
                 setHasMore(false);
               }
         })
      }
     catch(error){
         console.error('Error fetching data:', error);
-      setHasMore(false);
+    setPageToken('');
+     setHasMore(false);
 
     }
     }
-    useEffect(async ()=>{
+    useEffect( ()=>{
         setData([]);
         setPage(1);
         setHasMore(true);
         setPageToken('');
-        await fetchData();
+      fetchData();
     },[category])
 
     
@@ -48,7 +53,6 @@ const Feed = ({category}) => {
       endMessage={<p style={{ textAlign: 'center' }}><b>Yay! You have seen it all</b></p>}
     >
    <div className='feed'>
-   
         {data.map((item,index)=>{
             console.log(item);
             console.log(item.snippet.thumbnails.default);
