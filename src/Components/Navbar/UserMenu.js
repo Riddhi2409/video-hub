@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
- const {url,currentUser}= useAuth();
+ const {photo,email,logout}= useAuth();
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -24,20 +24,22 @@ const UserMenu = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   const navigate=useNavigate();
 const onLogout=()=>{
-    doSignOut().then(() => { navigate('/login') })
+    logout();
+    navigate('/login')
     console.log("LOgout");
 }
   return (
     <div className="user-menu" ref={menuRef}>
-     {url?
+     {photo?
                 <div className="App">
-             <img src={url} alt="User Icon" className="user-icon" onClick={handleToggle} /> 
+             <img src={photo} alt="User Icon" className="user-icon" onClick={handleToggle} /> 
                 </div>
                 :
                 <div className="client">
-            <Avatar onClick={handleToggle} name={currentUser.email[0]} size={35} round="14px" /></div>
+            <Avatar onClick={handleToggle} name={email} size={35} round="14px" /></div>
                 }
      
       {isOpen && (

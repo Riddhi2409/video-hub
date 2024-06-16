@@ -1,7 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import { auth } from "../../firebase/firebase";
-// import { GoogleAuthProvider } from "firebase/auth";
-import { onAuthStateChanged ,GoogleAuthProvider} from "firebase/auth";
 import { useGoogleLogin } from '@react-oauth/google';
 const AuthContext = React.createContext();
 
@@ -11,73 +8,52 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const[accesstoken,setAccesstoken]=useState('');
+  const[photo,setPhoto]=useState('');
+  const [email,setEmail]=useState('');
   const login = useGoogleLogin({
-    onSuccess: tokenResponse => {
+    onSuccess: async (tokenResponse) => {
       console.log(tokenResponse);
       setAccesstoken(tokenResponse.access_token);
       // Handle token response (e.g., send to backend for further validation)
+      try {
+        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${tokenResponse.access_token}`,
+          },
+        });
+        const data = await response.json();
+        console.log("eee",data)
+
+        // console.log("feeee",data)
+        setPhoto(data.picture);
+        setEmail(data.email)
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+      
     },
     onError: errorResponse => {
       console.error(errorResponse);
     },
   });
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
-  const [isEmailUser, setIsEmailUser] = useState(false);
-  const [isGoogleUser, setIsGoogleUser] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const[url,setUrl]=useState("");
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, initializeUser);
-    return unsubscribe;
-  }, []);
-  async function initializeUser(user) {
-    if (user) {
-
-      setCurrentUser({ ...user });
-      setUrl(user.providerData[0].photoURL);
-      // console.log(url);
-      // check if provider is email and password login
-      const isEmail = user.providerData.some(
-        (provider) => provider.providerId === "password"
-      );
-    //  console.log("provider",user.providerData[0].photoURL);
-      // useEffect(()=>{
-      //  
-      // },[user.providerData[0].photoURL])
-      
-     
-      setIsEmailUser(isEmail);
-
-      // check if the auth provider is google or not
-      const isGoogle = user.providerData.some(
-        (provider) => provider.providerId === GoogleAuthProvider.PROVIDER_ID
-      );
-      // console.log(user.providerData);
-      setIsGoogleUser(isGoogle);
-     
-      setUserLoggedIn(true);
-    } else {
-      setCurrentUser(null);
-      setUserLoggedIn(false);
-    }
-    setLoading(false);
+  const logout=()=>{
+    setAccesstoken('');
+    setEmail('');
+    setPhoto('');
   }
+
   const value = {
-    userLoggedIn,
-    isEmailUser,
-    isGoogleUser,
-    currentUser,
-    setCurrentUser,
     accesstoken,
     login,
-    url
+    photo,
+    email,
+    logout
   };
 console.log(value.url);
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

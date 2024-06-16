@@ -18,9 +18,9 @@ const Feed = ({category}) => {
         const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=IN&videoCategoryId=${category}&key=${API_KEY}&pageToken=${pageToken}&order=viewCount`;
         try{
             await fetch(videoList_url).then((response)=>response.json()).then((data)=>{
-                console.log("Data",data);
+                // console.log("Data",data);
                 setData((prevVideos) => [...prevVideos, ...data?.items]);
-                console.log("Token",data.nextPageToken);
+                // console.log("Token",data.nextPageToken);
             setPageToken(data.nextPageToken);
             if (!data.nextPageToken) {
                 setPageToken('');
@@ -54,8 +54,8 @@ const Feed = ({category}) => {
     >
    <div className='feed'>
         {data.map((item,index)=>{
-            console.log(item);
-            console.log(item.snippet.thumbnails.default);
+            // console.log(item);
+            // console.log(item.snippet.thumbnails.default);
             const second=moment.duration(item.contentDetails.duration).asSeconds()
             const _duration=moment.utc(second*1000).format("mm:ss")
             return <Link key={index} to={`video/${item.snippet.categoryId}/${item.id}`} className="card">

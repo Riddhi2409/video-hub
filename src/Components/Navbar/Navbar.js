@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/authContext'
 import Avatar from 'react-avatar';
 const Navbar = ({ setSidebar }) => {
-const {url,currentUser}=useAuth();
     const sidebar_toggle = (e) => {
         setSidebar((prev) => prev === false ? true : false);
     }

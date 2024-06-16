@@ -7,9 +7,10 @@ import GoogleLoginButton from "./Components/Auth/Login/Login2";
 import Register from "./Components/Auth/Register/Register";
 import { useAuth } from "./contexts/authContext";
 const App = () => {
-  const { userLoggedIn,accesstoken} = useAuth()
-  // console.log(accesstoken);
+  const {accesstoken} = useAuth()
+  console.log(accesstoken);
   const PrivateRoute = () => {
+    console.log(accesstoken ,"aa")
     if(accesstoken===""){
     console.log("Value",accesstoken);
     }
@@ -29,13 +30,13 @@ const App = () => {
       {/* <Route path="/register" element={<Register />} /> */}
 
 
-      <Route path='/' element={<PrivateRoute/>} >
+      <Route path='/' element={<PrivateRoute />} >
             <Route path='/' element={<Home  sidebar={sidebar} />} />
       </Route>
    
        
         {/* <Route path="/" element={<Home  sidebar={sidebar} />} /> */}
-        <Route path="/video/:categoryId/:videoId" element={<PrivateRoute/>} >
+        <Route path="/video/:categoryId/:videoId" element={<PrivateRoute />} >
         <Route path="/video/:categoryId/:videoId" element={<Video />} />
       </Route>
         {/* <Route path="/video/:categoryId/:videoId" element={<Video />} /> */}
