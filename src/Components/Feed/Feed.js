@@ -4,22 +4,24 @@ import { Link } from 'react-router-dom'
 import { API_KEY, value_converter } from '../../data'
 import moment from 'moment'
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useAuth } from '../../contexts/authContext'
 
 const Feed = ({category}) => {
+  const {accesstoken}=useAuth();
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
   const [pageToken,setPageToken]=useState('');
     const [data,setData] = useState([]);
    
     const fetchData = async ()=>{
-        if(pageToken === undefined){
+        if(!pageToken){
             setPageToken('');
         }
         const videoList_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=50&regionCode=IN&videoCategoryId=${category}&key=${API_KEY}&pageToken=${pageToken}&order=viewCount`;
         try{
             await fetch(videoList_url).then((response)=>response.json()).then((data)=>{
-                // console.log("Data",data);
-                setData((prevVideos) => [...prevVideos, ...data?.items]);
+                console.log("Data",data);
+                setData((prevVideos) => [...prevVideos, ...data.items]);
                 // console.log("Token",data.nextPageToken);
             setPageToken(data.nextPageToken);
             if (!data.nextPageToken) {

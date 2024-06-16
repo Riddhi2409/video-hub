@@ -10,9 +10,7 @@ import {useAuth} from '../../contexts/authContext'
 import ReactShowMoreText from 'react-show-more-text'
 import axios from 'axios';
 const PlayVideo = ({ videoId }) => {
-const {currentUser} = useAuth();
-console.log("Current",currentUser.accessToken);
-//console.log("User",currentUser.accessToken);
+const {accesstoken} = useAuth();
     const [apiData, setApiData] = useState(null);
     const [channelData, setChannelData] = useState(null);
     const [commentData, setCommentData] = useState([]);
@@ -48,7 +46,7 @@ console.log("Current",currentUser.accessToken);
             key: API_KEY,
           },
           headers: {
-            Authorization: `Bearer ${currentUser.accessToken}`, // Add your OAuth 2.0 access token here
+            Authorization: `Bearer ${accesstoken}`, // Add your OAuth 2.0 access token here
           },
         });
         console.log("Response",response);
