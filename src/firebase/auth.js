@@ -19,6 +19,7 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 };
 export const doSignInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
+  provider.addScope("https://www.googleapis.com/auth/youtube.force-ssl");
   const result = await signInWithRedirect(auth, provider);
   const user = result.user;
 
