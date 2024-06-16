@@ -7,14 +7,16 @@ const Recommended = ({ categoryId }) => {
 
     const [apiData, setApiData] = useState([]);
     const relatedVideo_API = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&maxResults=46&regionCode=US&videoCategoryId=${categoryId}&key=${API_KEY}`;
-
+    const fetchData= async ()=>{
+        await fetch(relatedVideo_API).then(res => res.json()).then(data => setApiData(data.items))
+    }
     useEffect(() => {
-        fetch(relatedVideo_API).then(res => res.json()).then(data => setApiData(data.items))
-    }, [])
+       fetchData();
+    }, [categoryId])
 
     return (
         <div className="recommended">
-            {apiData.map((item,index) => {
+            {apiData && apiData.map((item,index) => {
                 return (
                     <div key={index} className="side-video-list">
                         <Link to={`/video/${item.snippet.categoryId}/${item.id}`} onClick={()=>window.scrollTo(0,0)} className="small-thumbnail">

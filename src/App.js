@@ -3,13 +3,17 @@ import Navbar from "./Components/Navbar/Navbar";
 import { Routes, Route,Navigate,Outlet } from "react-router-dom";
 import Home from "./Pages/Home/Home";
 import Video from "./Pages/Video/Video";
-import Login from "./Components/Auth/Login/Login";
+import GoogleLoginButton from "./Components/Auth/Login/Login2";
 import Register from "./Components/Auth/Register/Register";
 import { useAuth } from "./contexts/authContext";
 const App = () => {
-  const { userLoggedIn } = useAuth()
+  const { userLoggedIn,accesstoken} = useAuth()
+  // console.log(accesstoken);
   const PrivateRoute = () => {
-    return userLoggedIn? 
+    if(accesstoken===""){
+    console.log("Value",accesstoken);
+    }
+    return accesstoken!==""? 
       <>
          <Navbar setSidebar={setSidebar} /> 
         <Outlet />
@@ -21,8 +25,8 @@ const App = () => {
     <div className="w-full h-screen flex flex-col">
      
       <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<GoogleLoginButton />} />
+      {/* <Route path="/register" element={<Register />} /> */}
 
 
       <Route path='/' element={<PrivateRoute/>} >

@@ -1,11 +1,14 @@
 import { auth } from './firebase';
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
   updatePassword,
+  getAuth,
   signInWithPopup,
+  getRedirectResult,
   GoogleAuthProvider,
   signInWithRedirect
 } from "firebase/auth";
@@ -20,9 +23,29 @@ export const doSignInWithEmailAndPassword = (email, password) => {
 export const doSignInWithGoogle = async () => {
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/youtube.force-ssl");
-  const result = await signInWithRedirect(auth, provider);
-  const user = result.user;
+try {
+    await signInWithRedirect(auth, provider);
+    const result = await getRedirectResult(auth);
+    
+    if (result) {
+      const db = getFirestore();
+      // User signed in successfully, add user to Firestore
+      const user = result.user;
+      console.log(user);
+      await setDoc(doc(db, "users", user.uid), {
+        uid: user.uid,
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+        providerId: user.providerId,
 
+      });
+    }
+  }
+  catch(error){
+
+  }
+  
   // add user to firestore
 };
 

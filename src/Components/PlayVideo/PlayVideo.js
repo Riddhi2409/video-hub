@@ -6,13 +6,18 @@ import share from '../../assets/share.png'
 import save from '../../assets/save.png'
 import { API_KEY, value_converter } from '../../data'
 import moment from 'moment'
-
+import {useAuth} from '../../contexts/authContext'
+import ReactShowMoreText from 'react-show-more-text'
+import axios from 'axios';
 const PlayVideo = ({ videoId }) => {
-
+const {currentUser} = useAuth();
+console.log("Current",currentUser.accessToken);
+//console.log("User",currentUser.accessToken);
     const [apiData, setApiData] = useState(null);
     const [channelData, setChannelData] = useState(null);
     const [commentData, setCommentData] = useState([]);
-
+    const [isSubscribed, setIsSubscribed] = useState(null);
+    
     const fetchVideoData = async () => {
 
         // Fetching Video Data
@@ -23,7 +28,7 @@ const PlayVideo = ({ videoId }) => {
     const fetchOtherData = async () => {
 
         // Fetching Channel Data
-        const channelLogo_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData.snippet.channelId}&key=${API_KEY}`;
+        const channelLogo_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData?.snippet?.channelId}&key=${API_KEY}`;
         await fetch(channelLogo_url).then(res => res.json()).then(data => setChannelData(data.items[0]));
 
         // Fetching Comment Data
@@ -31,8 +36,37 @@ const PlayVideo = ({ videoId }) => {
         await fetch(videoComment_url).then(res => res.json()).then(data => setCommentData(data.items));
 
     }
-
+    const [error, setError] = useState(null);
+  
+    const checkSubscriptionStatus = async () => {
+      try {
+        const response = await axios.get('https://www.googleapis.com/youtube/v3/subscriptions', {
+          params: {
+            part: 'snippet',
+            mine: true,
+            forChannelId: apiData?.snippet?.channelId,
+            key: API_KEY,
+          },
+          headers: {
+            Authorization: `Bearer ${currentUser.accessToken}`, // Add your OAuth 2.0 access token here
+          },
+        });
+        console.log("Response",response);
+        if (response.data.items.length > 0) {
+          setIsSubscribed(true);
+        } else {
+          setIsSubscribed(false);
+        }
+      } catch (error) {
+        console.error('Error checking subscription status:', error);
+        setError('Error checking subscription status');
+      }
+    };
+      
+   
     useEffect(() => {
+        // fetchData();
+        checkSubscriptionStatus();
         fetchVideoData();
         window.scrollTo(0, 0);
     }, [])
@@ -69,7 +103,15 @@ const PlayVideo = ({ videoId }) => {
             <div className="vid-description">
                 {/* Channel that makes learning Easy
                 Subscribe GreatStack to Watch More Tutorials on web development */}
-                <p>{apiData ? apiData.snippet.description.slice(0, 250) : "Description Here"}</p>
+                <p>{apiData ? 
+                <ReactShowMoreText
+                lines={2}
+                more='SHOW MORE'
+                less='SHOW LESS'
+                anchorClass='showMoreText'
+                expanded={false}
+                >{ apiData.snippet.description}</ReactShowMoreText>
+               : "Description Here"}</p>
                 <hr />
                 {/* 130 Comments */}
                 <h4>{apiData ? value_converter(apiData.statistics.commentCount) : 130} Comments</h4>

@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { auth } from "../../firebase/firebase";
 // import { GoogleAuthProvider } from "firebase/auth";
 import { onAuthStateChanged ,GoogleAuthProvider} from "firebase/auth";
-
+import { useGoogleLogin } from '@react-oauth/google';
 const AuthContext = React.createContext();
 
 export function useAuth() {
@@ -10,6 +10,18 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
+  const[accesstoken,setAccesstoken]=useState('');
+  const login = useGoogleLogin({
+    onSuccess: tokenResponse => {
+      console.log(tokenResponse);
+      setAccesstoken(tokenResponse.access_token);
+      // Handle token response (e.g., send to backend for further validation)
+    },
+    onError: errorResponse => {
+      console.error(errorResponse);
+    },
+  });
+
   const [currentUser, setCurrentUser] = useState(null);
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [isEmailUser, setIsEmailUser] = useState(false);
@@ -58,6 +70,8 @@ export function AuthProvider({ children }) {
     isGoogleUser,
     currentUser,
     setCurrentUser,
+    accesstoken,
+    login,
     url
   };
 console.log(value.url);
