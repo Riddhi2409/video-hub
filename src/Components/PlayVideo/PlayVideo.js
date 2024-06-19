@@ -10,6 +10,7 @@ import {useAuth} from '../../contexts/authContext'
 import ReactShowMoreText from 'react-show-more-text'
 import axios from 'axios';
 import request from '../../request'
+
 const PlayVideo = ({ videoId }) => {
 const {accesstoken} = useAuth();
     const [apiData, setApiData] = useState(null);
@@ -24,10 +25,10 @@ const {accesstoken} = useAuth();
         const videoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&key=${API_KEY}&id=${videoId}`;
         await fetch(videoDetails_url).then(res => res.json()).then(data => setApiData(data.items[0]));
     }
-    console.log(apiData,"api")
     const fetchOtherData = async () => {
 
         // Fetching Channel Data
+        if(!apiData) return;
         const channelLogo_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData?.snippet?.channelId}&key=${API_KEY}`;
         await fetch(channelLogo_url).then(res => res.json()).then(data => setChannelData(data.items[0]));
       
@@ -50,7 +51,6 @@ const {accesstoken} = useAuth();
     const [error, setError] = useState(null);
   
     const checkSubscriptionStatus = async () => {
-        console.log(apiData,"apids")
         if(!apiData) return;
         try {
             const { data } = await request('/subscriptions', {
@@ -63,10 +63,7 @@ const {accesstoken} = useAuth();
                   Authorization: `Bearer ${accesstoken}`,
                },
             })
-            console.log(data,"ss")
             setIsSubscribed(data.items.length == 0 ? false : true)
-            console.log(data.items.length ,"000")
-            console.log(isSubscribed)
 
          } catch (error) {
             console.log(error.response.data)
@@ -107,17 +104,20 @@ const {accesstoken} = useAuth();
    
     useEffect(() => {
 
-        fetchOtherData()
-        checkSubscriptionStatus();
         fetchVideoData();
+        checkSubscriptionStatus();
+        fetchOtherData()
         window.scrollTo(0, 0);
     }, [])
+
+    useEffect(()=>{
+        fetchVideoData()
+    },[videoId])
 
     useEffect(() => {
         fetchOtherData();
         fetchComment()
         checkSubscriptionStatus();
-        // fetchVideoData();
     }, [apiData])
 
     return (

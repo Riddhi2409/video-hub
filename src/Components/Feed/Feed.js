@@ -55,7 +55,6 @@ const Feed = ({category}) => {
     >
    <div className='feed'>
         {data.map((item,index)=>{
-            // console.log(item);
             // console.log(item.snippet.thumbnails.default);
             const second=moment.duration(item.contentDetails.duration).asSeconds()
             const _duration=moment.utc(second*1000).format("mm:ss")

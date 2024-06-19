@@ -13,10 +13,11 @@ const Recommended = ({ categoryId }) => {
     useEffect(() => {
        fetchData();
     }, [categoryId])
-
+    
     return (
         <div className="recommended">
             {apiData && apiData.map((item,index) => {
+               
                 return (
                     <div key={index} className="side-video-list">
                         <Link to={`/video/${item.snippet.categoryId}/${item.id}`} onClick={()=>window.scrollTo(0,0)} className="small-thumbnail">
