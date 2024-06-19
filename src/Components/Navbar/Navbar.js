@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useState} from 'react'
 import './Navbar.css'
 import menu_icon from '../../assets/menu.png'
 import logo from '../../assets/logo.png'
@@ -11,7 +11,12 @@ import UserMenu from './UserMenu';
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/authContext'
 import Avatar from 'react-avatar';
+import { useFun } from '../../contexts/youtubeContext.js'
+
 const Navbar = ({ setSidebar }) => {
+    const {getVideosBySearch}=useFun();
+
+    const [searchText,setSeachText]=useState('');
     const sidebar_toggle = (e) => {
         setSidebar((prev) => prev === false ? true : false);
     }
@@ -29,7 +34,11 @@ const Navbar = ({ setSidebar }) => {
             </div>
             <div className="nav-middle flex-div">
                 <div className="search-box flex-div">
-                    <input type="text" placeholder="Search" />
+                    <input type="text" placeholder="Search" value={searchText} onChange={(e)=>setSeachText(e.target.value)} onKeyDown={(e)=>{
+                        if(e.key==="Enter"){
+                            getVideosBySearch(searchText)
+                        }
+                    }}/>
                     <img src={search_icon} alt="" />
                 </div>
             </div>

@@ -10,116 +10,132 @@ import {useAuth} from '../../contexts/authContext'
 import ReactShowMoreText from 'react-show-more-text'
 import axios from 'axios';
 import request from '../../request'
+import { useFun } from '../../contexts/youtubeContext.js'
 
 const PlayVideo = ({ videoId }) => {
-const {accesstoken} = useAuth();
-    const [apiData, setApiData] = useState(null);
-    const [channelData, setChannelData] = useState(null);
-    const [commentData, setCommentData] = useState([]);
-    const [isSubscribed, setIsSubscribed] = useState("false");
-    const [text,setText]=useState('')
+    const {accesstoken} = useAuth();
+    // const [apiData, setApiData] = useState(null);
+    // const [channelData, setChannelData] = useState(null);
+    // const [commentData, setCommentData] = useState([]);
+    // const [isSubscribed, setIsSubscribed] = useState("false");
+    // const [text,setText]=useState('')
     
-    const fetchVideoData = async () => {
+    // const fetchVideoData = async () => {
 
-        // Fetching Video Data
-        const videoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&key=${API_KEY}&id=${videoId}`;
-        await fetch(videoDetails_url).then(res => res.json()).then(data => setApiData(data.items[0]));
-    }
-    const fetchOtherData = async () => {
+    //     // Fetching Video Data
+    //     const videoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&key=${API_KEY}&id=${videoId}`;
+    //     await fetch(videoDetails_url).then(res => res.json()).then(data => setApiData(data.items[0]));
+    // }
 
-        // Fetching Channel Data
-        if(!apiData) return;
-        const channelLogo_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData?.snippet?.channelId}&key=${API_KEY}`;
-        await fetch(channelLogo_url).then(res => res.json()).then(data => setChannelData(data.items[0]));
+    // const fetchOtherData = async () => {
+
+    //     // Fetching Channel Data
+    //     if(!apiData) return;
+    //     const channelLogo_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData?.snippet?.channelId}&key=${API_KEY}`;
+    //     await fetch(channelLogo_url).then(res => res.json()).then(data => setChannelData(data.items[0]));
       
-    }
-    const fetchComment = async() =>{
-        try { 
-            const { data } = await request('/commentThreads', {
-               params: {
-                  part: 'snippet',
-                  videoId: videoId,
-               },
-            })
-            setCommentData(data.items)
-            console.log("runned",data.items,commentData)
+    // }
 
-         } catch (error) {
-            console.log(error.response.data)
-         }
-    }
+    // const fetchComment = async() =>{
+    //     try { 
+    //         const { data } = await request('/commentThreads', {
+    //            params: {
+    //               part: 'snippet',
+    //               videoId: videoId,
+    //            },
+    //         })
+    //         setCommentData(data.items)
+    //         console.log("runned",data.items,commentData)
+
+    //      } catch (error) {
+    //         console.log(error.response.data)
+    //      }
+    // }
     const [error, setError] = useState(null);
   
-    const checkSubscriptionStatus = async () => {
-        if(!apiData) return;
-        try {
-            const { data } = await request('/subscriptions', {
-               params: {
-                  part: 'snippet',
-                  forChannelId: apiData?.snippet.channelId,
-                  mine: true,
-               },
-               headers: {
-                  Authorization: `Bearer ${accesstoken}`,
-               },
-            })
-            setIsSubscribed(data.items.length == 0 ? false : true)
+    // const checkSubscriptionStatus = async () => {
+    //     if(!apiData) return;
+    //     try {
+    //         const { data } = await request('/subscriptions', {
+    //            params: {
+    //               part: 'snippet',
+    //               forChannelId: apiData?.snippet.channelId,
+    //               mine: true,
+    //            },
+    //            headers: {
+    //               Authorization: `Bearer ${accesstoken}`,
+    //            },
+    //         })
+    //         setIsSubscribed(data.items.length == 0 ? false : true)
 
-         } catch (error) {
-            console.log(error.response.data)
-         }
+    //      } catch (error) {
+    //         console.log(error.response.data)
+    //      }
         
-    };
+    // };
     
-    const handleComment =async(e) =>{
-        e.preventDefault();
-        if(text.length==0) return;
-        try {
-            const obj = {
-               snippet: {
-                  videoId: videoId,
-                  topLevelComment: {
-                     snippet: {
-                        textOriginal: text,
-                     },
-                  },
-               },
-            }
+    // const handleComment =async(e) =>{
+    //     e.preventDefault();
+    //     if(text.length==0) return;
+    //     try {
+    //         const obj = {
+    //            snippet: {
+    //               videoId: videoId,
+    //               topLevelComment: {
+    //                  snippet: {
+    //                     textOriginal: text,
+    //                  },
+    //               },
+    //            },
+    //         }
       
-            await request.post('/commentThreads', obj, {
-               params: {
-                  part: 'snippet',
-               },
-               headers: {
-                  Authorization: `Bearer ${accesstoken}`,
-               },
-            })
-            setText('')      
-            setTimeout(() => fetchComment(), 3000)
-         } catch (error) {
-            console.log(error.response.data)
-         }
-    }
+    //         await request.post('/commentThreads', obj, {
+    //            params: {
+    //               part: 'snippet',
+    //            },
+    //            headers: {
+    //               Authorization: `Bearer ${accesstoken}`,
+    //            },
+    //         })
+    //         setText('')      
+    //         setTimeout(() => fetchComment(), 3000)
+    //      } catch (error) {
+    //         console.log(error.response.data)
+    //      }
+    // }
+
+    const {isSubscribed,
+            apiData,
+            channelData,
+            fetchComment,
+            checkSubscriptionStatus,
+            fetchOtherData,
+            handleComment,
+            fetchVideoData,
+            setText,
+            text,
+            commentData}=useFun();
 
    
     useEffect(() => {
 
-        fetchVideoData();
-        checkSubscriptionStatus();
-        fetchOtherData()
+        fetchVideoData(videoId);
+        checkSubscriptionStatus(videoId);
+        fetchOtherData(videoId)
         window.scrollTo(0, 0);
     }, [])
 
     useEffect(()=>{
-        fetchVideoData()
+        fetchVideoData(videoId)
     },[videoId])
 
     useEffect(() => {
-        fetchOtherData();
-        fetchComment()
-        checkSubscriptionStatus();
+        fetchOtherData(videoId);
+        fetchComment(videoId)
+        checkSubscriptionStatus(videoId);
     }, [apiData])
 
+    console.log(apiData)
     return (
         <div className="play-video">
             <iframe src={`https://www.youtube.com/embed/${videoId}?&autoplay=1`} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
@@ -170,7 +186,7 @@ const {accesstoken} = useAuth();
                         onChange={e => setText(e.target.value)}
                     />
                     {/* </div> */}
-                    <button className='p-2 border-2 hover:bg-slate-300 bg-slate-200 rounded-xl' onClick={(e)=>handleComment(e)}>Add</button>
+                    <button className='p-2 border-2 hover:bg-slate-300 bg-slate-200 rounded-xl' onClick={(e)=>handleComment(e,videoId)}>Add</button>
                 </div>
 
                 {commentData.map((item, index) => {
@@ -181,9 +197,9 @@ const {accesstoken} = useAuth();
                                 <h3>{item.snippet.topLevelComment.snippet.authorDisplayName} <span>{moment(item.snippet.topLevelComment.snippet.publishedAt).fromNow()}</span></h3>
                                 <p>{item.snippet.topLevelComment.snippet.textDisplay}</p>
                                 <div className="comment-action">
-                                    <img src={like} alt="" />
+                                    {/* <img src={like} alt="" />
                                     <span>{item.snippet.topLevelComment.snippet.likeCount}</span>
-                                    <img src={dislike} alt="" />
+                                    <img src={dislike} alt="" /> */}
                                 </div>
                             </div>
                         </div>
