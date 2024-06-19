@@ -17,9 +17,10 @@ import tom from '../../assets/tom.png'
 import megan from '../../assets/megan.png'
 import cameron from '../../assets/cameron.png'
 
-const Sidebar = ({sidebar,category,setCategory}) => {
+const Sidebar = ({sidebar,category,setCategory,subscriber}) => {
+  console.log(subscriber,)
   return (
-    <div className={`sidebar ${sidebar?"":"small-sidebar"}`}>
+    <div className={`sidebar ${sidebar?"":"small-sidebar"} overflow-auto`}>
       <div className="shortcut-links">
             <div onClick={()=>{setCategory(0)}} className={`side-link ${category===0?"active":""}`}><img src={home} alt="" /><p>Home</p></div>
             <div onClick={()=>{setCategory(20)}} className={`side-link ${category===20?"active":""}`}><img src={game_icon} alt="" /><p>Gaming</p></div>
@@ -34,11 +35,11 @@ const Sidebar = ({sidebar,category,setCategory}) => {
         </div>
         <div className="subscribed-list">
             <h3>SUBSCRIBED</h3>
-            <div className={`side-link`}><img src={jack} alt="" /><p>PewDiePie</p></div>
-            <div className={`side-link`}><img src={simon} alt="" /><p>MrBeast</p></div>
-            <div className={`side-link`}><img src={tom} alt="" /><p>Justin Bieber</p></div>
-            <div className={`side-link`}><img src={megan} alt="" /><p>5-Minute Crafts</p></div>
-            <div className={`side-link`}><img src={cameron} alt="" /><p>Nas Daily</p></div>
+            
+            {subscriber && subscriber?.map((item,id)=>
+            (
+              <div className={`side-link`} key={item.id}><img src={item.snippet.thumbnails.default.url} alt="" /><p>{item.snippet.title}</p></div>
+            ))}
         </div>
     </div>
   )
