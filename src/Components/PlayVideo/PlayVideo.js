@@ -50,6 +50,8 @@ const {accesstoken} = useAuth();
     const [error, setError] = useState(null);
   
     const checkSubscriptionStatus = async () => {
+        console.log(apiData,"apids")
+        if(!apiData) return;
         try {
             const { data } = await request('/subscriptions', {
                params: {
@@ -62,7 +64,10 @@ const {accesstoken} = useAuth();
                },
             })
             console.log(data,"ss")
-            setIsSubscribed(data.items.length ==0 ? false : true)
+            setIsSubscribed(data.items.length == 0 ? false : true)
+            console.log(data.items.length ,"000")
+            console.log(isSubscribed)
+
          } catch (error) {
             console.log(error.response.data)
          }
@@ -138,7 +143,7 @@ const {accesstoken} = useAuth();
                     {/* 500K Subscribers */}
                     <span>{channelData ? value_converter(channelData.statistics.subscriberCount) : "1M"} Subscribers</span>
                 </div>
-                <button type="button" className={`${isSubscribed ? "bg-slate-300" : "bg-red-900"}`}>{isSubscribed ? "subscribe": "unsubscribe"}</button>
+                <button className={`${isSubscribed ? "bg-slate-500 hover:bg-slate-600" : "bg-red-700 hover:bg-red-900"} p-2 rounded-md text-white` }>{isSubscribed ? "unsubscribe": "subscribe"}</button>
             </div>
             <div className="vid-description">
                 {/* Channel that makes learning Easy
