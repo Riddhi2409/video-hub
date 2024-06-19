@@ -16,7 +16,7 @@ const App = () => {
     }
     return accesstoken!==""? 
       <>
-         <Navbar setSidebar={setSidebar} subscriber={subscriber}/> 
+         <Navbar setSidebar={setSidebar} /> 
         <Outlet />
       </> : <Navigate replace to='/login' />
   };

@@ -24,17 +24,14 @@ const {accesstoken} = useAuth();
         const videoDetails_url = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&key=${API_KEY}&id=${videoId}`;
         await fetch(videoDetails_url).then(res => res.json()).then(data => setApiData(data.items[0]));
     }
-
+    console.log(apiData,"api")
     const fetchOtherData = async () => {
 
         // Fetching Channel Data
         const channelLogo_url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData?.snippet?.channelId}&key=${API_KEY}`;
         await fetch(channelLogo_url).then(res => res.json()).then(data => setChannelData(data.items[0]));
-
-        // Fetching Comment Data
       
     }
-    console.log("apidata",apiData)
     const fetchComment = async() =>{
         try { 
             const { data } = await request('/commentThreads', {
@@ -65,12 +62,13 @@ const {accesstoken} = useAuth();
                },
             })
             console.log(data,"ss")
+            setIsSubscribed(data.items.length ==0 ? false : true)
          } catch (error) {
             console.log(error.response.data)
          }
         
     };
-
+    
     const handleComment =async(e) =>{
         e.preventDefault();
         if(text.length==0) return;
@@ -103,7 +101,8 @@ const {accesstoken} = useAuth();
 
    
     useEffect(() => {
-        // fetchData();
+
+        fetchOtherData()
         checkSubscriptionStatus();
         fetchVideoData();
         window.scrollTo(0, 0);
@@ -112,6 +111,8 @@ const {accesstoken} = useAuth();
     useEffect(() => {
         fetchOtherData();
         fetchComment()
+        checkSubscriptionStatus();
+        // fetchVideoData();
     }, [apiData])
 
     return (
@@ -183,19 +184,6 @@ const {accesstoken} = useAuth();
                         </div>
                     )
                 })}
-                {/* <div className="comment">
-                    <img src={user_profile} alt="" />
-                    <div>
-                        <h3>Jack Nicholson <span>2 days ago</span></h3>
-                        <p>A global computer network providing a variety of information and communication facilities, consisting
-                            of interconnected networks using standardized communication protocols.</p>
-                        <div className="comment-action">
-                            <img src={like} alt="" />
-                            <span>244</span>
-                            <img src={dislike} alt="" />
-                        </div>
-                    </div>
-                </div> */}
             </div>
 
         </div>
