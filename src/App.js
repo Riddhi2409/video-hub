@@ -6,6 +6,8 @@ import Video from "./Pages/Video/Video";
 import GoogleLoginButton from "./Components/Auth/Login/Login2";
 import { useAuth } from "./contexts/authContext";
 import request from "./request";
+import SearchScreen from "./Pages/SearchScreen";
+import { useFun } from "./contexts/youtubeContext.js";
 
 const App = () => {
   const {accesstoken} = useAuth()
@@ -21,33 +23,16 @@ const App = () => {
       </> : <Navigate replace to='/login' />
   };
 
-  const [sidebar, setSidebar] = useState(true);
-  const [subscriber,setSubscriber] =useState([]);
-
   
-  const getSubscribedChannels = async () => {
-    try {
-       
-       const { data } = await request('/subscriptions', {
-          params: {
-             part: 'snippet,contentDetails',
-             mine: true,
-             maxResults: 15
-          },
-          headers: {
-             Authorization: `Bearer ${accesstoken}`,
-          },
-       })
-       setSubscriber(data.items)
-       console.log("subscriber data",data);
-    } catch (error) {
-       console.log("error",error.response.data)
-    }
- }
+  
+
+  const {subscriber,getSubscribedChannels,sidebar,setSidebar}=useFun()
+ 
 
  useEffect(()=>{
   // if(accesstoken){
   console.log("rin")
+  console.log(subscriber)
     getSubscribedChannels();
   // }
  },[accesstoken])
@@ -64,6 +49,10 @@ const App = () => {
 
       <Route path='/' element={<PrivateRoute />} >
             <Route path='/' element={<Home  sidebar={sidebar} subscriber={subscriber}/>} />
+      </Route>
+
+       <Route path='/search/:query' element={<PrivateRoute />} >
+            <Route path='/search/:query' element={<SearchScreen />} />
       </Route>
    
        

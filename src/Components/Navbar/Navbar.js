@@ -12,8 +12,10 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/authContext'
 import Avatar from 'react-avatar';
 import { useFun } from '../../contexts/youtubeContext.js'
+import { useNavigate } from 'react-router-dom'
 
 const Navbar = ({ setSidebar }) => {
+    const navigate=useNavigate();
     const {getVideosBySearch}=useFun();
 
     const [searchText,setSeachText]=useState('');
@@ -34,11 +36,23 @@ const Navbar = ({ setSidebar }) => {
             </div>
             <div className="nav-middle flex-div">
                 <div className="search-box flex-div">
-                    <input type="text" placeholder="Search" value={searchText} onChange={(e)=>setSeachText(e.target.value)} onKeyDown={(e)=>{
-                        if(e.key==="Enter"){
-                            getVideosBySearch(searchText)
-                        }
-                    }}/>
+                    <input 
+                        type="text" 
+                        placeholder="Search" 
+                        value={searchText} 
+                        onChange={(e)=>setSeachText(e.target.value)} onKeyDown={(e)=>{
+                            if(e.key==="Enter"){
+                                if(searchText.length==0) {
+                                    console.log("l")
+                                    navigate(`/`)
+                                    return;
+                                }
+                                getVideosBySearch(searchText)
+                                console.log(searchText)
+                                setSeachText('')
+                                navigate(`/search/${searchText}`);
+                            }
+                        }}/>
                     <img src={search_icon} alt="" />
                 </div>
             </div>
@@ -46,16 +60,7 @@ const Navbar = ({ setSidebar }) => {
                 <img src={upload_icon} alt="" />
                 <img src={more_icon} alt="" />
                 <img src={notification_icon} alt="" />
-                {/* {url?
-                <div className="App">
-                     <UserMenu url={url} onLogout={handleLogout} />
-                </div>
-                :
-                <div className="client">
-            <Avatar name={currentUser.email[0]} size={35} round="14px" /></div>
-                } */}
-                <UserMenu/>
-                {/* <img src={url} alt="" className="user-icon" /> */}
+                <UserMenu />
             </div>
         </nav>
     )

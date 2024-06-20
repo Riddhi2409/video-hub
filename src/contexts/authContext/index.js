@@ -8,11 +8,12 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const[accesstoken,setAccesstoken]=useState('');
+  
   const[photo,setPhoto]=useState('');
   const [email,setEmail]=useState('');
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log(tokenResponse);
+      console.log(tokenResponse,"pp");
       setAccesstoken(tokenResponse.access_token);
       // Handle token response (e.g., send to backend for further validation)
       try {

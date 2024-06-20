@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './Navbar.css'; // Make sure to include your styles
-import Avatar from 'react-avatar';
+// import './Navbar.css'; // Make sure to include your styles
 import { useAuth } from '../../contexts/authContext';
-import { doSignOut } from '../../firebase/auth';
+// import { doSignOut } from '../../firebase/auth';
 import { useNavigate } from 'react-router-dom';
+
 const UserMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
- const {photo,email,logout}= useAuth();
+  const { photo, email, logout } = useAuth();
+  console.log(photo)
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
@@ -25,23 +26,21 @@ const UserMenu = () => {
     };
   }, []);
 
-  const navigate=useNavigate();
-const onLogout=()=>{
+  const navigate = useNavigate();
+  const onLogout = () => {
     logout();
     navigate('/login')
     console.log("LOgout");
-}
+  }
   return (
     <div className="user-menu" ref={menuRef}>
-     {photo?
-                <div className="App">
-             <img src={photo} alt="User Icon" className="user-icon" onClick={handleToggle} /> 
-                </div>
-                :
-                <div className="client">
-            <Avatar onClick={handleToggle} name={email} size={35} round="14px" /></div>
-                }
-     
+
+      <div className="App">
+        <img src={photo} alt="User Icon" className='user-icon'  onClick={handleToggle} />
+      </div>
+
+
+
       {isOpen && (
         <div className="dropdown-menu">
           <button onClick={onLogout} className="logout-button">Logout</button>

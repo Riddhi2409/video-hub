@@ -17,7 +17,32 @@ export const YoutubeProvider = ({children})=>{
     const [commentData, setCommentData] = useState([]);
     const [isSubscribed, setIsSubscribed] = useState("false");
     const [text,setText]=useState('');
+    const [searchVideo , setSearchVideo]=useState([]);
+    const [subscriber,setSubscriber] =useState([]);
+    const [sidebar, setSidebar] = useState(true);
+    const [category,setCategory] = useState(0);
     
+    const getSubscribedChannels = async () => {
+      if(!accesstoken) return;
+      console.log(accesstoken,"subd")
+      try {
+         
+         const { data } = await request('/subscriptions', {
+            params: {
+               part: 'snippet,contentDetails',
+               mine: true,
+               maxResults: 15
+            },
+            headers: {
+               Authorization: `Bearer ${accesstoken}`,
+            },
+         })
+         setSubscriber(data.items)
+         console.log("subscriber data",data);
+      } catch (error) {
+         console.log("error",error.response.data)
+      }
+   }
     
     const fetchVideoData = async (videoId) => {
 
@@ -109,13 +134,13 @@ export const YoutubeProvider = ({children})=>{
          const { data } = await request('/search', {
             params: {
                part: 'snippet',
-   
                maxResults: 20,
                q: text,
                type: 'video,channel',
             },
          })
          console.log(data.items);
+         setSearchVideo(data.items);
       } catch (error) {
          console.log(error.message)
       }
@@ -133,7 +158,14 @@ export const YoutubeProvider = ({children})=>{
         setText,
         commentData,
         checkSubscriptionStatus,
-        getVideosBySearch
+        getVideosBySearch,
+        searchVideo,
+        subscriber,
+        getSubscribedChannels,
+        setSidebar,
+        sidebar,
+        category,
+        setCategory
     }
     console.log(apiData,text)
 

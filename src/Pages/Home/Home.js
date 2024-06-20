@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import Feed from "../../Components/Feed/Feed";
 import './Home.css'
+import { useFun } from "../../contexts/youtubeContext.js";
 
 const Home = ({sidebar,subscriber}) => {
 
-  const [category,setCategory] = useState(0);
+  const {category,setCategory}=useFun()
   
   return (
     <>
